@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instagram Follower Checker</title>
+  <title>igFinder — Instagram Follower Checker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
@@ -17,7 +17,7 @@
       --border-hover: rgba(255,255,255,0.15);
       --text: #f0f0f0;
       --text-muted: #888;
-      --text-faint: #555;
+      --text-faint: #444;
       --accent: #E1306C;
       --accent-soft: rgba(225,48,108,0.12);
       --green: #3ecf8e;
@@ -42,291 +42,264 @@
       padding: 0 1rem 4rem;
     }
 
-    /* Header */
     header {
       width: 100%;
-      max-width: 760px;
+      max-width: 780px;
       padding: 3rem 0 2rem;
       animation: fadeUp 0.5s ease both;
     }
 
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 0.5rem;
-    }
+    .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.4rem; }
 
     .logo-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
       background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
     }
 
     .logo-icon svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--text);
+    h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
+    .subtitle { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    main { width: 100%; max-width: 780px; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.5s 0.05s ease both;
     }
 
-    .subtitle {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
+    .tab-btn {
+      flex: 1; padding: 9px 12px;
+      background: transparent; border: none; border-radius: 7px;
+      font-family: var(--font); font-size: 0.85rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
     }
 
-    /* Main */
-    main {
-      width: 100%;
-      max-width: 760px;
-    }
+    .tab-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { background: var(--surface2); color: var(--text); }
 
-    /* Input section */
-    .input-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-      animation: fadeUp 0.5s 0.1s ease both;
-    }
+    .tab-panel { display: none; animation: fadeUp 0.3s ease both; }
+    .tab-panel.active { display: block; }
 
-    @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr; } }
-
-    .input-box {
+    /* ── GUIDA ── */
+    .guide-intro {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1rem;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .guide-intro strong { color: var(--text); font-weight: 500; }
+
+    .warning-box {
+      background: var(--amber-soft);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.83rem;
+      color: var(--amber);
+      margin-bottom: 1.25rem;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+
+    .warning-box svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
+
+    .steps { display: flex; flex-direction: column; gap: 10px; }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #f09433, #bc1888);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 600; color: white;
+    }
+
+    .step-content { flex: 1; }
+    .step-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; }
+    .step-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+    .step-desc code { font-family: var(--mono); font-size: 0.8rem; background: var(--surface2); padding: 1px 6px; border-radius: 4px; color: var(--text); }
+
+    .path-chain {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+      margin-top: 10px;
+    }
+
+    .path-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+      font-size: 0.78rem; font-weight: 500; color: var(--text);
+    }
+
+    .path-arrow { color: var(--text-faint); font-size: 0.8rem; }
+
+    .img-placeholder {
+      margin-top: 10px; border-radius: 8px;
+      background: var(--surface2); border: 1px dashed var(--border-hover);
+      padding: 14px; font-size: 0.78rem; color: var(--text-faint);
+      text-align: center;
+    }
+
+    /* ── UPLOAD ── */
+    .upload-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 560px) { .upload-grid { grid-template-columns: 1fr; } }
+
+    .drop-zone {
+      background: var(--surface);
+      border: 1.5px dashed var(--border-hover);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: rgba(225,48,108,0.5);
+      background: rgba(225,48,108,0.04);
+    }
+
+    .drop-zone.loaded {
+      border-color: rgba(62,207,142,0.4);
+      background: rgba(62,207,142,0.04);
+    }
+
+    .drop-zone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+
+    .drop-icon { margin-bottom: 10px; }
+    .drop-icon svg { width: 32px; height: 32px; stroke: var(--text-muted); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .drop-zone.loaded .drop-icon svg { stroke: var(--green); }
+
+    .drop-label { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
+    .drop-zone.loaded .drop-label { color: var(--green); }
+    .drop-filename { font-size: 0.75rem; color: var(--text-faint); font-family: var(--mono); }
+    .drop-sub { font-size: 0.72rem; color: var(--text-faint); margin-top: 6px; }
+
+    /* ── MANUAL INPUT (same as before) ── */
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    @media (max-width: 560px) { .input-grid { grid-template-columns: 1fr; } }
+
+    .input-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1rem;
       transition: border-color 0.2s;
     }
 
     .input-box:focus-within { border-color: var(--border-hover); }
 
     .input-label {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
     }
 
-    .input-label svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .input-label svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
     textarea {
-      width: 100%;
-      height: 150px;
-      background: transparent;
-      border: none;
-      outline: none;
-      resize: vertical;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      color: var(--text);
-      line-height: 1.7;
+      width: 100%; height: 150px; background: transparent;
+      border: none; outline: none; resize: vertical;
+      font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.7;
     }
 
     textarea::placeholder { color: var(--text-faint); }
 
-    /* Button */
+    /* ── BUTTON ── */
     .analyze-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-      border: none;
-      border-radius: var(--radius);
-      color: white;
-      font-family: var(--font);
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: -0.01em;
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border: none; border-radius: var(--radius);
+      color: white; font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; letter-spacing: -0.01em;
       transition: opacity 0.2s, transform 0.15s;
-      animation: fadeUp 0.5s 0.2s ease both;
     }
 
-    .analyze-btn:hover { opacity: 0.9; }
+    .analyze-btn:hover { opacity: 0.88; }
     .analyze-btn:active { transform: scale(0.99); }
+    .analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Results */
+    /* ── RESULTS ── */
     #results { display: none; margin-top: 2rem; animation: fadeUp 0.4s ease both; }
 
-    /* Stats */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 1.5rem;
-    }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 1.5rem; }
+    @media (max-width: 560px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
 
-    @media (max-width: 580px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; }
     .stat-value { font-size: 1.8rem; font-weight: 600; letter-spacing: -0.03em; }
     .stat-value.red { color: var(--accent); }
     .stat-value.green { color: var(--green); }
-    .stat-value.amber { color: var(--amber); }
 
-    /* Search */
-    .search-wrap {
-      position: relative;
-      margin-bottom: 1rem;
-    }
-
-    .search-wrap svg {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 16px;
-      height: 16px;
-      stroke: var(--text-muted);
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      pointer-events: none;
-    }
+    .search-wrap { position: relative; margin-bottom: 1rem; }
+    .search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 
     #search-input {
-      width: 100%;
-      padding: 12px 14px 12px 42px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.875rem;
-      outline: none;
+      width: 100%; padding: 11px 14px 11px 42px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      font-family: var(--mono); font-size: 0.875rem; outline: none;
       transition: border-color 0.2s;
     }
 
     #search-input:focus { border-color: var(--border-hover); }
     #search-input::placeholder { color: var(--text-faint); }
 
-    /* Banner */
-    .banner {
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 1rem;
-      display: none;
-    }
-
+    .banner { padding: 12px 16px; border-radius: var(--radius); font-size: 0.875rem; font-weight: 500; margin-bottom: 1rem; display: none; }
     .banner.mutual { background: var(--green-soft); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
     .banner.follows-you { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
     .banner.not-following { background: var(--red-soft); color: var(--accent); border: 1px solid rgba(225,48,108,0.2); }
     .banner.absent { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
 
-    /* Lists */
-    .lists-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+    .lists-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 560px) { .lists-grid { grid-template-columns: 1fr; } }
 
-    @media (max-width: 580px) { .lists-grid { grid-template-columns: 1fr; } }
-
-    .list-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    .list-header {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .list-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .list-title svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-    .list-count {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-    }
-
+    .list-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .list-header { padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .list-title { display: flex; align-items: center; gap: 8px; font-size: 0.77rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .list-title svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .list-count { font-size: 0.73rem; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
     .count-red { background: var(--red-soft); color: var(--accent); }
     .count-green { background: var(--green-soft); color: var(--green); }
 
-    .list-body {
-      max-height: 320px;
-      overflow-y: auto;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
+    .list-body { max-height: 320px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
     .list-body::-webkit-scrollbar { width: 4px; }
     .list-body::-webkit-scrollbar-track { background: transparent; }
     .list-body::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
 
-    .chip {
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      font-weight: 500;
-      transition: background 0.15s;
-    }
-
+    .chip { padding: 7px 12px; border-radius: 8px; font-family: var(--mono); font-size: 0.78rem; font-weight: 500; }
     .chip-red { background: rgba(225,48,108,0.07); color: #e8799a; border: 1px solid rgba(225,48,108,0.12); }
-    .chip-red:hover { background: rgba(225,48,108,0.13); }
     .chip-green { background: rgba(62,207,142,0.07); color: #6fddb0; border: 1px solid rgba(62,207,142,0.12); }
-    .chip-green:hover { background: rgba(62,207,142,0.13); }
-
     .empty-msg { font-size: 0.8rem; color: var(--text-faint); padding: 8px 4px; }
 
-    /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-    /* Footer */
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--text-faint);
-    }
+    footer { margin-top: 3rem; text-align: center; font-size: 0.73rem; color: var(--text-faint); }
   </style>
 </head>
 <body>
@@ -337,32 +310,141 @@
       <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
     </div>
     <div>
-      <h1>Instagram Follower Checker</h1>
-      <p class="subtitle">Scopri chi non ti segue back e cerca username specifici</p>
+      <h1>igFinder</h1>
+      <p class="subtitle">Scopri chi non ti segue back — senza login</p>
     </div>
   </div>
 </header>
 
 <main>
-  <div class="input-grid">
-    <div class="input-box">
-      <div class="input-label">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        I tuoi Followers
-      </div>
-      <textarea id="followers-input" placeholder="Incolla qui i tuoi follower&#10;(uno per riga, o separati da virgole)"></textarea>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('guide')">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Guida
+    </button>
+    <button class="tab-btn" onclick="switchTab('upload')">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Carica file JSON
+    </button>
+    <button class="tab-btn" onclick="switchTab('manual')">
+      <svg viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+      Incolla testo
+    </button>
+  </div>
+
+  <!-- TAB: GUIDA -->
+  <div class="tab-panel active" id="tab-guide">
+    <div class="guide-intro">
+      Instagram ti permette di <strong>scaricare tutti i tuoi dati</strong> direttamente dall'app, senza usare app di terze parti o dare la tua password a nessuno. I file includono la lista completa di followers e following in formato JSON, che puoi poi caricare qui.
     </div>
-    <div class="input-box">
-      <div class="input-label">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-        Chi stai Seguendo
+
+    <div class="warning-box">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Instagram ci mette fino a <strong>48 ore</strong> a preparare il file — di solito però arriva entro pochi minuti. Ti manda una notifica quando è pronto.
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Apri Instagram e vai nelle Impostazioni</div>
+          <div class="step-desc">Tocca la tua foto profilo in basso a destra, poi l'icona ☰ in alto a destra, poi <strong>Impostazioni e privacy</strong>.</div>
+        </div>
       </div>
-      <textarea id="following-input" placeholder="Incolla qui i tuoi following&#10;(uno per riga, o separati da virgole)"></textarea>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Cerca "Scarica le tue informazioni"</div>
+          <div class="step-desc">Segui questo percorso:</div>
+          <div class="path-chain">
+            <span class="path-item">Impostazioni e privacy</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Attività</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Scarica le tue informazioni</span>
+          </div>
+          <div class="step-desc" style="margin-top:8px;">In alternativa: cerca direttamente <code>Scarica le tue informazioni</code> nella barra di ricerca delle impostazioni.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Seleziona "Alcuni tuoi dati"</div>
+          <div class="step-desc">Scegli <strong>Alcuni tuoi dati</strong> (non serve scaricare tutto). Cerca e spunta solo <strong>Followers</strong> e <strong>Following</strong> sotto la sezione "Connessioni".</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Scegli formato JSON e scarica</div>
+          <div class="step-desc">Come formato seleziona <strong>JSON</strong> (non HTML). Inserisci la tua email e premi <strong>Crea file</strong>. Riceverai un link via email o notifica.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Estrai e carica i file qui</div>
+          <div class="step-desc">Scarica il file .zip, estrailo. Troverai i file <code>followers_1.json</code> e <code>following.json</code>. Caricali nella scheda <strong>Carica file JSON</strong> qui sopra.</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <button class="analyze-btn" onclick="analyze()">Analizza →</button>
+  <!-- TAB: UPLOAD JSON -->
+  <div class="tab-panel" id="tab-upload">
+    <div class="upload-grid">
+      <div class="drop-zone" id="drop-followers" ondragover="onDragOver(event,'drop-followers')" ondragleave="onDragLeave('drop-followers')" ondrop="onDrop(event,'followers')">
+        <input type="file" accept=".json" onchange="onFileInput(event,'followers')" />
+        <div class="drop-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="drop-label" id="drop-followers-label">Carica followers</div>
+        <div class="drop-filename" id="drop-followers-file">followers_1.json</div>
+        <div class="drop-sub">Trascina o clicca per selezionare</div>
+      </div>
 
+      <div class="drop-zone" id="drop-following" ondragover="onDragOver(event,'drop-following')" ondragleave="onDragLeave('drop-following')" ondrop="onDrop(event,'following')">
+        <input type="file" accept=".json" onchange="onFileInput(event,'following')" />
+        <div class="drop-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+        </div>
+        <div class="drop-label" id="drop-following-label">Carica following</div>
+        <div class="drop-filename" id="drop-following-file">following.json</div>
+        <div class="drop-sub">Trascina o clicca per selezionare</div>
+      </div>
+    </div>
+
+    <button class="analyze-btn" id="upload-btn" onclick="analyzeUploads()" disabled>Analizza →</button>
+  </div>
+
+  <!-- TAB: MANUALE -->
+  <div class="tab-panel" id="tab-manual">
+    <div class="input-grid">
+      <div class="input-box">
+        <div class="input-label">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          I tuoi Followers
+        </div>
+        <textarea id="followers-input" placeholder="Incolla qui i follower&#10;(uno per riga, o separati da virgole)"></textarea>
+      </div>
+      <div class="input-box">
+        <div class="input-label">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+          Chi stai Seguendo
+        </div>
+        <textarea id="following-input" placeholder="Incolla qui i following&#10;(uno per riga, o separati da virgole)"></textarea>
+      </div>
+    </div>
+    <button class="analyze-btn" onclick="analyzeManual()">Analizza →</button>
+  </div>
+
+  <!-- RESULTS -->
   <div id="results">
     <div class="stats-row" id="stats-row"></div>
 
@@ -396,32 +478,125 @@
       </div>
     </div>
   </div>
+
 </main>
 
-<footer>Nessun dato viene inviato a server — tutto elaborato nel tuo browser.</footer>
+<footer>Nessun dato viene inviato a server — tutto elaborato localmente nel tuo browser.</footer>
 
 <script>
+  // ── STATE ──
   let followersSet = new Set();
   let followingSet = new Set();
   let nonFollowers = [];
   let notFollowingBack = [];
   let mutual = [];
 
+  let uploadedFollowers = null;
+  let uploadedFollowing = null;
+
+  // ── TABS ──
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const map = { guide: 0, upload: 1, manual: 2 };
+    document.querySelectorAll('.tab-btn')[map[name]].classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // ── DRAG & DROP ──
+  function onDragOver(e, id) { e.preventDefault(); document.getElementById(id).classList.add('drag-over'); }
+  function onDragLeave(id) { document.getElementById(id).classList.remove('drag-over'); }
+
+  function onDrop(e, type) {
+    e.preventDefault();
+    const id = type === 'followers' ? 'drop-followers' : 'drop-following';
+    document.getElementById(id).classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) readJsonFile(file, type);
+  }
+
+  function onFileInput(e, type) {
+    const file = e.target.files[0];
+    if (file) readJsonFile(file, type);
+  }
+
+  function readJsonFile(file, type) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        const usernames = extractUsernames(data, type);
+        if (type === 'followers') {
+          uploadedFollowers = usernames;
+          markLoaded('drop-followers', file.name, usernames.length + ' account');
+        } else {
+          uploadedFollowing = usernames;
+          markLoaded('drop-following', file.name, usernames.length + ' account');
+        }
+        document.getElementById('upload-btn').disabled = !(uploadedFollowers && uploadedFollowing);
+      } catch(err) {
+        alert('Errore nel leggere il file JSON. Assicurati di aver selezionato il file corretto.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function extractUsernames(data, type) {
+    // Instagram JSON format for followers: array of objects with string_list_data
+    // following.json has a key "relationships_following"
+    let list = [];
+
+    if (Array.isArray(data)) {
+      list = data;
+    } else if (data.relationships_following) {
+      list = data.relationships_following;
+    } else if (data.relationships_followers) {
+      list = data.relationships_followers;
+    } else {
+      // try first key
+      const firstKey = Object.keys(data)[0];
+      if (Array.isArray(data[firstKey])) list = data[firstKey];
+    }
+
+    return list.map(item => {
+      if (item.string_list_data && item.string_list_data[0]) {
+        return item.string_list_data[0].value.toLowerCase();
+      }
+      if (typeof item === 'string') return item.toLowerCase();
+      return null;
+    }).filter(Boolean);
+  }
+
+  function markLoaded(id, filename, count) {
+    const zone = document.getElementById(id);
+    zone.classList.add('loaded');
+    const suffix = id === 'drop-followers' ? '-followers' : '-following';
+    document.getElementById('drop' + suffix + '-label').textContent = '✓ ' + count + ' caricati';
+    document.getElementById('drop' + suffix + '-file').textContent = filename;
+  }
+
+  // ── ANALYZE from uploads ──
+  function analyzeUploads() {
+    if (!uploadedFollowers || !uploadedFollowing) return;
+    runAnalysis(uploadedFollowers, uploadedFollowing);
+  }
+
+  // ── ANALYZE manual ──
   function parseList(text) {
     return text.split(/[\n,;]+/)
       .map(s => s.trim().replace(/^@/, '').toLowerCase())
       .filter(s => s.length > 0);
   }
 
-  function analyze() {
+  function analyzeManual() {
     const fwersRaw = document.getElementById('followers-input').value;
     const fwingRaw = document.getElementById('following-input').value;
-    if (!fwersRaw.trim() && !fwingRaw.trim()) {
-      alert('Incolla almeno una lista prima di analizzare.');
-      return;
-    }
-    const followers = parseList(fwersRaw);
-    const following = parseList(fwingRaw);
+    if (!fwersRaw.trim() && !fwingRaw.trim()) { alert('Incolla almeno una lista prima di analizzare.'); return; }
+    runAnalysis(parseList(fwersRaw), parseList(fwingRaw));
+  }
+
+  // ── CORE ──
+  function runAnalysis(followers, following) {
     followersSet = new Set(followers);
     followingSet = new Set(following);
     nonFollowers = following.filter(u => !followersSet.has(u));
@@ -431,9 +606,9 @@
     renderLists('');
     document.getElementById('search-input').value = '';
     document.getElementById('banner').style.display = 'none';
-    const results = document.getElementById('results');
-    results.style.display = 'block';
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const r = document.getElementById('results');
+    r.style.display = 'block';
+    setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   }
 
   function renderStats() {
