@@ -559,10 +559,13 @@
     }
 
     return list.map(item => {
-      if (item.string_list_data && item.string_list_data[0]) {
-        return item.string_list_data[0].value.toLowerCase();
-      }
       if (typeof item === 'string') return item.toLowerCase();
+      if (item.title) return item.title.toLowerCase();
+      if (item.string_list_data && item.string_list_data[0]) {
+        const d = item.string_list_data[0];
+        if (d.value) return d.value.toLowerCase();
+        if (d.href) return d.href.split('/').filter(Boolean).pop().toLowerCase();
+      }
       return null;
     }).filter(Boolean);
   }
