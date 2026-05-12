@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instagram Follower Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.15);
+      --text: #f0f0f0;
+      --text-muted: #888;
+      --text-faint: #555;
+      --accent: #E1306C;
+      --accent-soft: rgba(225,48,108,0.12);
+      --green: #3ecf8e;
+      --green-soft: rgba(62,207,142,0.1);
+      --amber: #f5a623;
+      --amber-soft: rgba(245,166,35,0.1);
+      --red-soft: rgba(225,48,108,0.1);
+      --radius: 10px;
+      --radius-lg: 14px;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1rem 4rem;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      max-width: 760px;
+      padding: 3rem 0 2rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Main */
+    main {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    /* Input section */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr; } }
+
+    .input-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .input-box:focus-within { border-color: var(--border-hover); }
+
+    .input-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .input-label svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    textarea::placeholder { color: var(--text-faint); }
+
+    /* Button */
+    .analyze-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      border: none;
+      border-radius: var(--radius);
+      color: white;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s, transform 0.15s;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .analyze-btn:hover { opacity: 0.9; }
+    .analyze-btn:active { transform: scale(0.99); }
+
+    /* Results */
+    #results { display: none; margin-top: 2rem; animation: fadeUp 0.4s ease both; }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 580px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-value { font-size: 1.8rem; font-weight: 600; letter-spacing: -0.03em; }
+    .stat-value.red { color: var(--accent); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.amber { color: var(--amber); }
+
+    /* Search */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #search-input:focus { border-color: var(--border-hover); }
+    #search-input::placeholder { color: var(--text-faint); }
+
+    /* Banner */
+    .banner {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .banner.mutual { background: var(--green-soft); color: var(--green); border: 1px solid rgba(62,207,142,0.2); }
+    .banner.follows-you { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
+    .banner.not-following { background: var(--red-soft); color: var(--accent); border: 1px solid rgba(225,48,108,0.2); }
+    .banner.absent { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* Lists */
+    .lists-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 580px) { .lists-grid { grid-template-columns: 1fr; } }
+
+    .list-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .list-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .list-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .list-title svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .list-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .count-red { background: var(--red-soft); color: var(--accent); }
+    .count-green { background: var(--green-soft); color: var(--green); }
+
+    .list-body {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .list-body::-webkit-scrollbar { width: 4px; }
+    .list-body::-webkit-scrollbar-track { background: transparent; }
+    .list-body::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .chip-red { background: rgba(225,48,108,0.07); color: #e8799a; border: 1px solid rgba(225,48,108,0.12); }
+    .chip-red:hover { background: rgba(225,48,108,0.13); }
+    .chip-green { background: rgba(62,207,142,0.07); color: #6fddb0; border: 1px solid rgba(62,207,142,0.12); }
+    .chip-green:hover { background: rgba(62,207,142,0.13); }
+
+    .empty-msg { font-size: 0.8rem; color: var(--text-faint); padding: 8px 4px; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+    </div>
+    <div>
+      <h1>Instagram Follower Checker</h1>
+      <p class="subtitle">Scopri chi non ti segue back e cerca username specifici</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="input-grid">
+    <div class="input-box">
+      <div class="input-label">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        I tuoi Followers
+      </div>
+      <textarea id="followers-input" placeholder="Incolla qui i tuoi follower&#10;(uno per riga, o separati da virgole)"></textarea>
+    </div>
+    <div class="input-box">
+      <div class="input-label">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+        Chi stai Seguendo
+      </div>
+      <textarea id="following-input" placeholder="Incolla qui i tuoi following&#10;(uno per riga, o separati da virgole)"></textarea>
+    </div>
+  </div>
+
+  <button class="analyze-btn" onclick="analyze()">Analizza →</button>
+
+  <div id="results">
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" type="text" placeholder="Cerca un username..." oninput="filterResults()" />
+    </div>
+
+    <div class="banner" id="banner"></div>
+
+    <div class="lists-grid">
+      <div class="list-panel">
+        <div class="list-header">
+          <div class="list-title">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+            Non ti seguono
+          </div>
+          <span class="list-count count-red" id="nf-count">0</span>
+        </div>
+        <div class="list-body" id="nf-list"></div>
+      </div>
+      <div class="list-panel">
+        <div class="list-header">
+          <div class="list-title">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+            Non li stai seguendo
+          </div>
+          <span class="list-count count-green" id="nfb-count">0</span>
+        </div>
+        <div class="list-body" id="nfb-list"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Nessun dato viene inviato a server — tutto elaborato nel tuo browser.</footer>
+
+<script>
+  let followersSet = new Set();
+  let followingSet = new Set();
+  let nonFollowers = [];
+  let notFollowingBack = [];
+  let mutual = [];
+
+  function parseList(text) {
+    return text.split(/[\n,;]+/)
+      .map(s => s.trim().replace(/^@/, '').toLowerCase())
+      .filter(s => s.length > 0);
+  }
+
+  function analyze() {
+    const fwersRaw = document.getElementById('followers-input').value;
+    const fwingRaw = document.getElementById('following-input').value;
+    if (!fwersRaw.trim() && !fwingRaw.trim()) {
+      alert('Incolla almeno una lista prima di analizzare.');
+      return;
+    }
+    const followers = parseList(fwersRaw);
+    const following = parseList(fwingRaw);
+    followersSet = new Set(followers);
+    followingSet = new Set(following);
+    nonFollowers = following.filter(u => !followersSet.has(u));
+    notFollowingBack = followers.filter(u => !followingSet.has(u));
+    mutual = following.filter(u => followersSet.has(u));
+    renderStats();
+    renderLists('');
+    document.getElementById('search-input').value = '';
+    document.getElementById('banner').style.display = 'none';
+    const results = document.getElementById('results');
+    results.style.display = 'block';
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderStats() {
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Followers</div><div class="stat-value">${followersSet.size}</div></div>
+      <div class="stat-card"><div class="stat-label">Following</div><div class="stat-value">${followingSet.size}</div></div>
+      <div class="stat-card"><div class="stat-label">Non ti seguono</div><div class="stat-value red">${nonFollowers.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Mutui</div><div class="stat-value green">${mutual.length}</div></div>
+    `;
+  }
+
+  function renderLists(filter) {
+    const f = filter.toLowerCase().replace(/^@/, '');
+    const nfF = nonFollowers.filter(u => !f || u.includes(f));
+    const nfbF = notFollowingBack.filter(u => !f || u.includes(f));
+    document.getElementById('nf-count').textContent = nfF.length;
+    document.getElementById('nfb-count').textContent = nfbF.length;
+    document.getElementById('nf-list').innerHTML = nfF.length
+      ? nfF.map(u => `<div class="chip chip-red">@${u}</div>`).join('')
+      : '<div class="empty-msg">Nessuno trovato</div>';
+    document.getElementById('nfb-list').innerHTML = nfbF.length
+      ? nfbF.map(u => `<div class="chip chip-green">@${u}</div>`).join('')
+      : '<div class="empty-msg">Nessuno trovato</div>';
+  }
+
+  function filterResults() {
+    const q = document.getElementById('search-input').value.trim().toLowerCase().replace(/^@/, '');
+    renderLists(q);
+    const banner = document.getElementById('banner');
+    if (!q) { banner.style.display = 'none'; return; }
+    const inF = followersSet.has(q);
+    const inFi = followingSet.has(q);
+    banner.className = 'banner';
+    if (inF && inFi) {
+      banner.textContent = `✓ @${q} ti segue e tu lo segui — siete mutui`;
+      banner.classList.add('mutual');
+    } else if (inF && !inFi) {
+      banner.textContent = `@${q} ti segue, ma tu non lo stai seguendo`;
+      banner.classList.add('follows-you');
+    } else if (!inF && inFi) {
+      banner.textContent = `@${q} non ti segue, ma tu lo stai seguendo`;
+      banner.classList.add('not-following');
+    } else {
+      banner.textContent = `@${q} non è presente in nessuna lista`;
+      banner.classList.add('absent');
+    }
+    banner.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
